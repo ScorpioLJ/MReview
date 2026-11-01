@@ -36,6 +36,18 @@ Exit codes: `0` pass / `1` environment or argument error / `2` unverified units 
 
 `<target>` may be a directory (auto-discovers `*.py` and `*.pt/.pth/.ckpt/.safetensors`) or a single file.
 
+## Version Scoping (`tools/version_scope.py`)
+
+`mreview` reviews whole files or directories and does not filter code by runtime version strings. When training code dispatches behavior through config-driven version values (e.g. `if 'v10.' in self.params.version`), use `tools/version_scope.py` to find which lines actually execute for a given config:
+
+```bash
+python tools/version_scope.py <config.yaml|configs_dir> <code.py|code_dir> [--units units.json]
+```
+
+- Reads every string scalar from the YAML config(s) - key names do not matter - scans Python sources for `'X' in expr`, `'X' not in expr` and `expr == 'X'` conditions, and reports every condition that evaluates TRUE for a config value.
+- `--units` maps hit lines to mreview units (pass the `units.json` produced by `mreview split`).
+- Pass directories to batch over configs x code files; `--json out.json` writes a structured report.
+
 ## Artifacts & Traceability
 
 Each run creates `.mreview-results/<UTC timestamp>/`, containing:
@@ -96,6 +108,7 @@ ruff check mreview tests
 
 ```
 mreview/          # package source (cli / splitter / tools / weights / ledger / report / doctor / questionnaire)
+tools/            # standalone helpers (version_scope.py: map config version values to code lines/units)
 tests/            # pytest
 fixtures/         # known-defect samples (bad_model.py, bad_train.py, bad_weights.pt, fake_ledger.json)
 ```

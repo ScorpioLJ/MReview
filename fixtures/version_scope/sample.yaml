@@ -1,0 +1,3 @@
+version: ldm-ispdiffusion-v10.2-s1-bm256-finetune
+diffusion_version: v10.2-s1
+mode: train
