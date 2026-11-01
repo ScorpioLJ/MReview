@@ -6,3 +6,6 @@ __pycache__/
 build/
 dist/
 .mreview-git/
+
+# Windows ACL repair tool output (local machine artifacts)
+/.dsh-acl-recovery/
