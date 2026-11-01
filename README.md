@@ -1,68 +1,68 @@
 # MReview
 
-模型设计 / 训练代码审查 CLI。借鉴 c-review 的审查逻辑——**按代码位置切分单元 → 固定问卷 → 账本证据 → 覆盖校验**——并集成 ruff / torchfix 等确定性工具与权重文件检查。以纯 CLI 形态交付，可被任意 agent harness 通过 shell 调用。
+A CLI for reviewing model design and training code. It splits target code into units by code location, applies a fixed questionnaire, collects ledger evidence, and performs coverage verification. It also integrates deterministic tools such as `ruff` and `torchfix`, plus weight-file checks. Delivered as a pure CLI that any agent harness can invoke through the shell.
 
-## 审查逻辑（源自 c-review，不搬其工程架构）
+## Review Logic
 
-1. **位置切分**：用 AST 把目标代码切成单元（函数/方法、类体、模块级流程），每行恰好属于一个单元；超过 150 行在语法接缝处拆块。
-2. **固定问卷**：每个单元针对同一套 10 题作答，每题要求落在单元行号范围内的证据。
-3. **账本校验**：`verify` 重解析源码核对——①每单元 10 题全覆盖；②evidence 行号在单元范围内；③“ok”也必须带行号。缺口只把该单元标为“未验证”并列出 `(unit, question)`，不整份作废。
-4. **外部工具合并**：ruff/torchfix 输出自动并入 findings（按 file:line 去重），缺失工具跳过并在报告标注。
+1. **Location-based splitting**: AST-based splitting of target code into units (functions/methods, class bodies, module-level flows); every line belongs to exactly one unit; units longer than 150 lines are split at syntax seams.
+2. **Fixed questionnaire**: each unit is answered against the same 10-question set, and every answer must cite evidence within the unit's line range.
+3. **Ledger verification**: `verify` re-parses the source to check that (1) all 10 questions are covered per unit, (2) evidence line numbers fall within the unit's range, and (3) "ok" verdicts also carry line numbers. Gaps only mark that unit as "unverified" and list the missing `(unit, question)` pairs, without invalidating the whole ledger.
+4. **External tool merge**: `ruff`/`torchfix` output is merged into findings automatically (deduplicated by file:line); missing tools are skipped and noted in the report.
 
-## 审查模式
+## Review Modes
 
-- **静态（默认）**：不真跑——跑外部工具 + 只读权重文件做数值检查。
-- **动态（`--dynamic`）**：真正加载模型（import + 实例化 + 载入权重 + 一次 forward），检查输出有限性/幅值；失败降级为“未验证（原因）”。
+- **Static (default)**: no actual execution — runs external tools and read-only numeric checks on weight files.
+- **Dynamic (`--dynamic`)**: actually loads the model (import + instantiate + load weights + one forward pass), checking output finiteness and magnitude; on failure it degrades to "unverified (reason)".
 
-## 安装
+## Installation
 
 ```bash
-# 在目标 Python 环境（如 diffusion）
+# in the target Python environment (e.g. diffusion)
 pip install -e .
 ```
 
-无隔离 venv、无 uv；`doctor` 只确认审查工具是否存在。
+No isolated venv, no uv; `doctor` only confirms that the review tools exist.
 
-## 用法
+## Usage
 
 ```bash
-mreview doctor                    # 环境自检：确认 torch/ruff/torchfix 等是否存在
-mreview split <target>            # 切分单元，生成 worksheet.json（单元 × 10 题账本模板）
-mreview review <target> [--dynamic]  # 全自动：split + 外部工具 + 权重检查
-mreview verify <ledger.json> <target> # 校验 agent 回填的账本，输出合并报告
+mreview doctor                    # environment self-check: confirm torch/ruff/torchfix etc. exist
+mreview split <target>            # split units, generate worksheet.json (units x 10-question ledger template)
+mreview review <target> [--dynamic]  # fully automatic: split + external tools + weight checks
+mreview verify <ledger.json> <target> # validate an agent-filled ledger, output merged report
 ```
 
-退出码：`0` 通过 / `1` 环境或参数错误 / `2` 存在未核实单元。
+Exit codes: `0` pass / `1` environment or argument error / `2` unverified units exist.
 
-`<target>` 可为目录（自动发现 `*.py` 与 `*.pt/.pth/.ckpt/.safetensors`）或单个文件。
+`<target>` may be a directory (auto-discovers `*.py` and `*.pt/.pth/.ckpt/.safetensors`) or a single file.
 
-## 落盘与追溯
+## Artifacts & Traceability
 
-每次运行新建 `.mreview-results/<UTC 时间戳>/`，写入：
+Each run creates `.mreview-results/<UTC timestamp>/`, containing:
 
-| 文件 | 内容 |
+| File | Contents |
 |---|---|
-| `units.json` | 单元清单（id、类型、行号范围） |
-| `worksheet.json` | 问卷 + 账本模板 |
-| `findings.json` | 结构化 findings（severity/category/file/line/cause/fix/evidence） |
-| `REPORT.md` | 人读报告 |
-| `ledger-gate.json` | verify 覆盖校验结果与缺口 |
-| `tools/*.txt` | 各工具原始输出 |
-| `weights/*.json` | 权重检查明细 |
-| `meta.json` | 命令、参数、环境 |
+| `units.json` | unit list (id, type, line range) |
+| `worksheet.json` | questionnaire + ledger template |
+| `findings.json` | structured findings (severity/category/file/line/cause/fix/evidence) |
+| `REPORT.md` | human-readable report |
+| `ledger-gate.json` | verify coverage results and gaps |
+| `tools/*.txt` | raw tool outputs |
+| `weights/*.json` | weight-check details |
+| `meta.json` | command, arguments, environment |
 
-## 10 题问卷（所有代码单元通用）
+## 10-Question Questionnaire (shared by all code units)
 
-输入输出契约 / 数值稳定性 / 梯度与反向传播 / 模式与状态 / 设备与数据放置 / 资源与生命周期 / 错误处理 / 边界与索引 / 一致性与约定 / 性能。
+Input/output contracts / numerical stability / gradients & backpropagation / patterns & state / device & data placement / resources & lifecycle / error handling / boundaries & indexing / consistency & conventions / performance.
 
-## 权重检查
+## Weight Checks
 
-- **静态**：可加载性、state_dict key 与模型定义对齐、dtype/shape、NaN/Inf 计数与所在层、min/max/mean/std、全零/死区。
-- **动态**（`--dynamic`）：实例化模型载入权重跑一次 forward，检查输出有限性与幅值。
+- **Static**: loadability, state_dict key alignment with the model definition, dtype/shape, NaN/Inf counts and locations, min/max/mean/std, all-zero/dead zones.
+- **Dynamic (`--dynamic`)**: instantiate the model, load weights, run one forward pass, and check output finiteness and magnitude.
 
-每个 finding 都带**原因**与**解决方案**（如 NaN 追溯到 lr 过大 / AMP 溢出并给出修复步骤）。
+Every finding includes a **cause** and a **suggested fix** (e.g. NaN traced to a too-large learning rate / AMP overflow, with remediation steps).
 
-## 账本格式（agent 回填）
+## Ledger Format (agent-filled)
 
 ```json
 {
@@ -80,28 +80,28 @@ mreview verify <ledger.json> <target> # 校验 agent 回填的账本，输出合
 }
 ```
 
-`verdict` 取值 `ok / issue / skip`；`ok` 与 `skip` 也必须带行号证据。
+`verdict` values: `ok / issue / skip`; `ok` and `skip` must also carry line-range evidence.
 
-## 开发
+## Development
 
 ```bash
 pip install -e .[dev]
-pytest tests/          # 单元切分 / 账本校验 / 权重检查测试
+pytest tests/          # unit split / ledger verification / weight-check tests
 ruff check mreview tests
 ```
 
-`fixtures/` 是已知缺陷样例与假账本，用于验证召回率与 verify 抓假能力。
+`fixtures/` contains known-defect samples and a fake ledger, used to exercise recall and verify's ability to catch fabricated evidence.
 
-## 目录结构
+## Directory Structure
 
 ```
-mreview/          # 包源码（cli / splitter / tools / weights / ledger / report / doctor / questionnaire）
+mreview/          # package source (cli / splitter / tools / weights / ledger / report / doctor / questionnaire)
 tests/            # pytest
-fixtures/         # 已知缺陷样例（bad_model.py、bad_train.py、bad_weights.pt、fake_ledger.json）
+fixtures/         # known-defect samples (bad_model.py, bad_train.py, bad_weights.pt, fake_ledger.json)
 ```
 
-## 已知限制
+## Known Limitations
 
-- torchfix / hotpath 等未安装时自动跳过并在报告中标注，不影响运行。
-- 动态检查的输入形状按模型首层启发式猜测（Conv2d → 64×64，Linear → in_features），失败会如实标注“未验证”。
-- 无外网时无法验证 torchfix/hotpath-ai/torch-preflight 的存在性；`doctor` 会如实报告。
+- torchfix / hotpath etc. are skipped when not installed and noted in the report; this does not block a run.
+- Dynamic-check input shapes are guessed heuristically from the model's first layer (Conv2d -> 64x64, Linear -> in_features); failures are honestly marked "unverified".
+- Without network access, the existence of torchfix/hotpath-ai/torch-preflight cannot be verified; `doctor` reports this honestly.
