@@ -1,0 +1,274 @@
+{
+  "units": [
+    {
+      "unit_id": "bad_model.py:BadNet.__init__",
+      "answers": [
+        {
+          "question_id": "q1",
+          "verdict": "ok",
+          "evidence": "L17-L23"
+        },
+        {
+          "question_id": "q2",
+          "verdict": "ok",
+          "evidence": "L17-L23"
+        },
+        {
+          "question_id": "q3",
+          "verdict": "ok",
+          "evidence": "L17-L23"
+        },
+        {
+          "question_id": "q4",
+          "verdict": "ok",
+          "evidence": "L17-L23"
+        },
+        {
+          "question_id": "q5",
+          "verdict": "ok",
+          "evidence": "L17-L23"
+        },
+        {
+          "question_id": "q6",
+          "verdict": "ok",
+          "evidence": "L17-L23"
+        },
+        {
+          "question_id": "q7",
+          "verdict": "ok",
+          "evidence": "L17-L23"
+        },
+        {
+          "question_id": "q8",
+          "verdict": "ok",
+          "evidence": "L17-L23"
+        },
+        {
+          "question_id": "q9",
+          "verdict": "ok",
+          "evidence": "L17-L23"
+        },
+        {
+          "question_id": "q10",
+          "verdict": "ok",
+          "evidence": "L17-L23"
+        }
+      ]
+    },
+    {
+      "unit_id": "bad_model.py:BadNet.forward",
+      "answers": [
+        {
+          "question_id": "q2",
+          "verdict": "ok",
+          "evidence": "L24-L27"
+        },
+        {
+          "question_id": "q3",
+          "verdict": "ok",
+          "evidence": "L24-L27"
+        },
+        {
+          "question_id": "q4",
+          "verdict": "ok",
+          "evidence": "L24-L27"
+        },
+        {
+          "question_id": "q5",
+          "verdict": "ok",
+          "evidence": "L24-L27"
+        },
+        {
+          "question_id": "q6",
+          "verdict": "ok",
+          "evidence": "L24-L27"
+        },
+        {
+          "question_id": "q7",
+          "verdict": "ok",
+          "evidence": "L24-L27"
+        },
+        {
+          "question_id": "q8",
+          "verdict": "ok",
+          "evidence": "L24-L27"
+        },
+        {
+          "question_id": "q9",
+          "verdict": "ok",
+          "evidence": "L24-L27"
+        },
+        {
+          "question_id": "q10",
+          "verdict": "ok",
+          "evidence": "L24-L27"
+        }
+      ]
+    },
+    {
+      "unit_id": "bad_model.py:module_flow@1",
+      "answers": [
+        {
+          "question_id": "q1",
+          "verdict": "ok",
+          "evidence": "L1-L16"
+        },
+        {
+          "question_id": "q2",
+          "verdict": "ok",
+          "evidence": ""
+        },
+        {
+          "question_id": "q3",
+          "verdict": "ok",
+          "evidence": "L1-L16"
+        },
+        {
+          "question_id": "q4",
+          "verdict": "ok",
+          "evidence": "L1-L16"
+        },
+        {
+          "question_id": "q5",
+          "verdict": "ok",
+          "evidence": "L1-L16"
+        },
+        {
+          "question_id": "q6",
+          "verdict": "ok",
+          "evidence": "L1-L16"
+        },
+        {
+          "question_id": "q7",
+          "verdict": "ok",
+          "evidence": "L1-L16"
+        },
+        {
+          "question_id": "q8",
+          "verdict": "ok",
+          "evidence": "L1-L16"
+        },
+        {
+          "question_id": "q9",
+          "verdict": "ok",
+          "evidence": "L1-L16"
+        },
+        {
+          "question_id": "q10",
+          "verdict": "ok",
+          "evidence": "L1-L16"
+        }
+      ]
+    },
+    {
+      "unit_id": "bad_train.py:module_flow@1",
+      "answers": [
+        {
+          "question_id": "q1",
+          "verdict": "ok",
+          "evidence": "L1-L13"
+        },
+        {
+          "question_id": "q2",
+          "verdict": "ok",
+          "evidence": "L1-L13"
+        },
+        {
+          "question_id": "q3",
+          "verdict": "ok",
+          "evidence": "L1-L13"
+        },
+        {
+          "question_id": "q4",
+          "verdict": "ok",
+          "evidence": "L1-L13"
+        },
+        {
+          "question_id": "q5",
+          "verdict": "ok",
+          "evidence": "L1-L13"
+        },
+        {
+          "question_id": "q6",
+          "verdict": "ok",
+          "evidence": "L1-L13"
+        },
+        {
+          "question_id": "q7",
+          "verdict": "ok",
+          "evidence": "L1-L13"
+        },
+        {
+          "question_id": "q8",
+          "verdict": "ok",
+          "evidence": "L1-L13"
+        },
+        {
+          "question_id": "q9",
+          "verdict": "ok",
+          "evidence": "L1-L13"
+        },
+        {
+          "question_id": "q10",
+          "verdict": "ok",
+          "evidence": "L1-L13"
+        }
+      ]
+    },
+    {
+      "unit_id": "bad_train.py:train_epoch",
+      "answers": [
+        {
+          "question_id": "q1",
+          "verdict": "ok",
+          "evidence": "L14-L29"
+        },
+        {
+          "question_id": "q2",
+          "verdict": "ok",
+          "evidence": "L14-L29"
+        },
+        {
+          "question_id": "q3",
+          "verdict": "ok",
+          "evidence": "L14-L29"
+        },
+        {
+          "question_id": "q4",
+          "verdict": "ok",
+          "evidence": "L14-L29"
+        },
+        {
+          "question_id": "q5",
+          "verdict": "ok",
+          "evidence": "L14-L29"
+        },
+        {
+          "question_id": "q6",
+          "verdict": "ok",
+          "evidence": "L14-L29"
+        },
+        {
+          "question_id": "q7",
+          "verdict": "ok",
+          "evidence": "L14-L29"
+        },
+        {
+          "question_id": "q8",
+          "verdict": "ok",
+          "evidence": "L14-L29"
+        },
+        {
+          "question_id": "q9",
+          "verdict": "ok",
+          "evidence": "L14-L29"
+        },
+        {
+          "question_id": "q10",
+          "verdict": "ok",
+          "evidence": "L14-L29"
+        }
+      ]
+    }
+  ]
+}
